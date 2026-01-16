@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database.models.users import User 
 from passlib.hash import bcrypt
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import jwt, JWTError
 
 class UserService:
     SECRET_KEY = "my_secret_key"
@@ -42,3 +42,8 @@ class UserService:
         token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return token
         
+    def decode_token(self, token: str) -> dict | None:
+        try:
+            return jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+        except JWTError:
+            return None

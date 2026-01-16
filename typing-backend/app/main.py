@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from app.routers import pdf
 from app.routers import auth
+from app.routers import document
 from app.database.connections import Base, engine
 from fastapi.middleware.cors import CORSMiddleware 
 
@@ -22,3 +23,4 @@ app.add_middleware(
 
 app.include_router(pdf.router) 
 app.include_router(auth.router)
+app.include_router(document.router)

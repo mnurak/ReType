@@ -20,6 +20,7 @@ services:
       env_file:
         - typing-backend/.env
       volumes:
+        - ./typing-backend/app:/app/app
         - files_data:/app/files         # volume for PDFs inside container
       depends_on:
         - db

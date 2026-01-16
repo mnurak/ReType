@@ -1,61 +1,85 @@
 from pathlib import Path
 import shutil
 from sqlalchemy.orm import Session
-from database.models.documents import Document
+from sqlalchemy.exc import IntegrityError
+from app.database.models.documents import Document
+from datetime import datetime
+from fastapi import HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 
 FILES_DIR = Path("/app/files")  # base folder for all user files
 
-def ensure_user_folder(user_id: int) -> Path:
-    folder = FILES_DIR / str(user_id)
-    folder.mkdir(parents=True, exist_ok=True)
-    return folder
+class DocumentService:
+    
+    def __init__(self, db: Session):
+        self.db = db
+        pass
 
-def save_pdf(db: Session, file, user_id: int) -> Document:
-    """
-    Save the file to disk and create DB record
-    """
-    user_folder = ensure_user_folder(user_id)
-    file_path = user_folder / file.filename
+    def ensure_user_folder(self, user_id: int) -> Path:
+        folder = FILES_DIR / str(user_id)
+        folder.mkdir(parents=True, exist_ok=True)
+        return folder
 
-    with file_path.open("wb") as f:
-        f.write(file.file.read())
+    def save_pdf(self, file:UploadFile, user_id: int) -> Document:
 
-    # save to DB
-    doc = Document(user_id=user_id, filename=file.filename, filepath=str(file_path))
-    db.add(doc)
-    db.commit()
-    db.refresh(doc)
-    return doc
+        user_folder = self.ensure_user_folder(user_id)
+        file_path = user_folder / file.filename
 
-def get_pdf_path(db: Session, user_id: int, filename: str) -> Path | None:
-    """
-    Return file path on disk for a user's PDF
-    """
-    doc = db.query(Document).filter_by(user_id=user_id, filename=filename).first()
-    if doc and Path(doc.filepath).exists():
-        return Path(doc.filepath)
-    return None
+        with file_path.open("wb") as f:
+            f.write(file.file.read())
 
-def delete_pdf(db: Session, user_id: int, filename: str) -> bool:
-    """
-    Delete a PDF from disk and DB
-    """
-    doc = db.query(Document).filter_by(user_id=user_id, filename=filename).first()
-    if doc:
-        path = Path(doc.filepath)
+        # save to DB
+        doc = Document(
+                    user_id=user_id,
+                    filename=file.filename,
+                    create_time= datetime.now()
+                )
+        try:
+            self.db.add(doc)
+            self.db.commit()
+            self.db.refresh(doc)
+            return doc
+        except IntegrityError as e:
+            self.db.rollback()
+            if "unique constraint" in str(e.orig):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"PDF '{file.filename}' already exists."
+                )
+            # For any other DB error
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to save PDF"
+            )
+
+    def get_pdf(self, user_id: int, filename: str):
+        path = FILES_DIR / str(user_id) / filename
         if path.exists():
-            path.unlink()  # delete file
-        db.delete(doc)
-        db.commit()
-        return True
-    return False
+            return FileResponse(path, media_type="application/pdf", filename=filename)
+        else:
+            raise HTTPException(status_code=404, detail="File not found")
 
-def delete_user_folder(user_id: int) -> bool:
-    """
-    Delete all files for a user
-    """
-    folder = FILES_DIR / str(user_id)
-    if folder.exists():
-        shutil.rmtree(folder)
-        return True
-    return False
+    def delete_pdf(self, user_id: int, filename: str) -> bool:
+
+        doc = self.db.query(Document).filter_by(user_id=user_id, filename=filename).first()
+        if doc:
+            path = FILES_DIR / str(user_id) / doc.filename
+            if path.exists():
+                path.unlink()
+            try:
+                self.db.delete(doc)
+                self.db.commit()
+                return {"Status":"success"}
+            except Exception as e:
+                print("This is getting and exception")
+                print(e)
+                return HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=401, detail="no pdf found")
+
+    def delete_user_folder(self, user_id: int) -> bool:
+
+        folder = FILES_DIR / str(user_id)
+        if folder.exists():
+            shutil.rmtree(folder)
+            return True
+        return False
