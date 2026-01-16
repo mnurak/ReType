@@ -1,0 +1,9 @@
+fastapi==0.121.0
+uvicorn==0.38.0
+SQLAlchemy==2.0.44
+psycopg2-binary==2.9.11
+passlib==1.7.4
+python-jose==3.5.0
+python-dotenv==1.2.1
+PyMuPDF==1.26.7
+python-multipart==0.0.20
