@@ -1,5 +1,5 @@
 import PdfBody from "./PdfBody"
-import PdfHeader from "./PdfHeader"
+import PdfHeader from "./pdfHeadder/PdfHeader"
 
 
 const pdfPanel = () => {

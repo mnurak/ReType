@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File
 from app.services.pdfService import pdfService
 
-router = APIRouter(prefix="/pdf", tags=["PDF"])
+router = APIRouter(prefix="/api/pdf", tags=["PDF"])
 
 @router.post("/extract")
 def extract_pdf_text(file: UploadFile = File(...)):

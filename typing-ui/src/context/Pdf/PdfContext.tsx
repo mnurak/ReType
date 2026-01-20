@@ -3,16 +3,20 @@ import type { PdfContextValues } from "./PdfInterface";
 import type { singlePdfRecord } from "../../utils/idb";
 
 const defaultPdfContextValues: PdfContextValues = {
-  pdf:"",
-  pdfUrl:"",
+  pdf: "",
+  pdfUrl: "",
   init: async () => {
     return;
   },
-  savePdfData: async (record:singlePdfRecord) => {
+  savePdfData: async (record: singlePdfRecord) => {
     return;
   },
-  
+
   deletePdfData: async () => {
+    return;
+  },
+
+  uploadAndGetPdfData: async (file: File) => {
     return;
   },
 };

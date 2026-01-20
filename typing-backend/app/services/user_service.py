@@ -8,7 +8,7 @@ from jose import jwt, JWTError
 class UserService:
     SECRET_KEY = "my_secret_key"
     ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 4
     
     def __init__(self, db: Session):
         self.db = db

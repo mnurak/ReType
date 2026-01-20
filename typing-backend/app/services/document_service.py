@@ -52,6 +52,23 @@ class DocumentService:
                 detail="Failed to save PDF"
             )
 
+    def get_list(self, user_id:int):
+        try:
+            doc = (self.db
+                   .query(Document.filename)
+                   .filter(Document.user_id == user_id)
+                   .all()
+            )
+            if doc :
+                return {
+                    "files": [row[0] for row in doc]
+                }
+            return {
+                "files": []
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Internal Server Error")
+
     def get_pdf(self, user_id: int, filename: str):
         path = FILES_DIR / str(user_id) / filename
         if path.exists():
