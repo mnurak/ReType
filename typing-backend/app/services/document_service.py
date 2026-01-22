@@ -88,8 +88,6 @@ class DocumentService:
                 self.db.commit()
                 return {"Status":"success"}
             except Exception as e:
-                print("This is getting and exception")
-                print(e)
                 return HTTPException(status_code=500, detail=str(e))
         raise HTTPException(status_code=401, detail="no pdf found")
 

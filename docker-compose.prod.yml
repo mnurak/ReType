@@ -1,0 +1,65 @@
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: typing
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    image: typing-backend:prod.0.9.0
+    build:
+      context: ./typing-backend
+      target: prod
+    restart: unless-stopped
+    env_file:
+      - typing-backend/.env
+    environment:
+      WEB_CONCURRENCY: 2
+    volumes:
+      - files_data_prod:/app/files
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+      # should check on this issue
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 60s
+      retries: 10
+
+  frontend:
+    image: typing-frontend:prod.0.9.0
+    build:
+      context: ./typing-ui
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    networks:
+      - backend
+      - frontend
+
+volumes:
+  postgres_data_prod:
+  files_data_prod:
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

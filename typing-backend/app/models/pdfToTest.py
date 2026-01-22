@@ -1,6 +1,4 @@
 class pdfToText:
-    def __init__(self):
-        print("loaded the pdf to text")
         
     def getText(self, doc):
 

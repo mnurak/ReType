@@ -15,4 +15,12 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Keep worker files separate if needed
+        entryFileNames: "[name].js",
+      },
+    },
+  },
 });

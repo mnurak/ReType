@@ -10,8 +10,6 @@ def get_current_user(
 ):
     user_service = UserService(db)
     token = request.cookies.get("access_token")
-    print(request.cookies)
-    print("The token is :", token)
     if not token:
         raise HTTPException(status_code=401, detail="Token is missing or invalid")
     

@@ -6,8 +6,6 @@ from app.routers import document
 from app.database.connections import Base, engine
 from fastapi.middleware.cors import CORSMiddleware 
 
-print("hello")
-
 app = FastAPI()
 
 print("Creating tables if not exist...")
@@ -24,3 +22,8 @@ app.add_middleware(
 app.include_router(pdf.router) 
 app.include_router(auth.router)
 app.include_router(document.router)
+
+# later from the helth we can also add the db/api ready 
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"status": "ok"}

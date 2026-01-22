@@ -1,7 +1,7 @@
 import { pdfjs } from "react-pdf";
-import workerSrc from "pdfjs-dist/build/pdf.worker.mjs?url";
+// import workerSrc from "pdfjs-dist/build/pdf.worker.mjs?url";
 
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.js";
 
 import { useContext, useRef, useState, useEffect } from "react";
 import { Document, Page } from "react-pdf";
