@@ -6,18 +6,20 @@ const RemovePdf = ({
 }: {
   setSelectedPdf: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const { deletePdfData } = useContext(PdfContext);
+  const { pdf, deletePdfData } = useContext(PdfContext);
   const handleRemovePdf = () => {
     setSelectedPdf("");
     deletePdfData();
   };
   return (
-    <button
-      className="h-15 w-35 px-3 py-.5 m-1 rounded bg-red-500 text-white"
-      onClick={handleRemovePdf}
-    >
-      Remove PDF from device
-    </button>
+    pdf && (
+      <button
+        className="h-15 w-35 px-3 py-.5 m-1 rounded bg-red-500 text-white"
+        onClick={handleRemovePdf}
+      >
+        Remove PDF from device
+      </button>
+    )
   );
 };
 

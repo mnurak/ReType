@@ -2,7 +2,7 @@ import Header from "./components/layout/Headder";
 import Footer from "./components/layout/Footer";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import About from "./pages/About";
+import About from "./pages/About/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/auth/Auth";
 import AuthState from "./context/auth/AuthState";

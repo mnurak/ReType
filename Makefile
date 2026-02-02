@@ -18,7 +18,7 @@ prod-build-up:
 	docker compose -f $(DOCKER_PROD) up --build -d
 
 prod-up:
-	docker compose -f $(DOCKER_PROD) up
+	docker compose -f $(DOCKER_PROD) up -d
 
 prod-down:
 	docker compose -f $(DOCKER_PROD) down

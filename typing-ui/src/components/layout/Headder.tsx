@@ -15,6 +15,7 @@ function Header() {
       {/* Right side: Navigation links */}
       <nav className="flex gap-4">
         <LinkComponent url="/" name="Home" />
+        <LinkComponent url="/about" name="About" />
 
         {(authenticated && (
           <LinkComponent url="/auth" name="Sign Out" signout={signout} />

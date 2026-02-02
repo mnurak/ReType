@@ -1,4 +1,5 @@
 # services/user_service.py
+import os
 from sqlalchemy.orm import Session
 from app.database.models.users import User 
 from passlib.hash import bcrypt
@@ -6,9 +7,9 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 
 class UserService:
-    SECRET_KEY = "my_secret_key"
-    ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 4
+    SECRET_KEY = os.getenv("SECRET_KEY", "my_secret_key")
+    ALGORITHM = os.getenv("ALGORITHM", "HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 240))
     
     def __init__(self, db: Session):
         self.db = db
