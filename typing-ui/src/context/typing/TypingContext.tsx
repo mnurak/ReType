@@ -1,38 +1,45 @@
 import { createContext } from "react";
-import type { TypingContextValues } from "./TypingInterface";
+import type {
+  TypingContextValues,
+  UpdateMetricSignal,
+} from "./TypingInterface";
 
 const defaultTypingContext: TypingContextValues = {
-  isRunning: false,
-  elapsedTime: 0,
-  totalChars: 0,
-  incorrectChars: 0,
-  extraChars: 0,
-  incorrectWords: 0,
+  startTime: null,
+  endTime: null,
+  timePassed: 0,
 
-  startTime: new Date(),
+  runningState: "idle",
+
+  start: () => {
+    return;
+  },
+  pause: () => {
+    return;
+  },
+  stop: () => {
+    return;
+  },
+  reset: () => {
+    return;
+  },
 
   currentPage: 1,
-  updatePageNumber: () => {},
-  updateElapsedTime: () => {},
+  updatePage: (num: number, fromTypingBox: boolean) => {
+    return;
+  },
 
-  start: () => {},
-  stop: () => {},
-  reset: () => {},
+  metric: {
+    totalChar: 0,
+    wrongChar: 0,
+    extraChar: 0,
+    skippedChar: 0,
+  },
+  updateMetric: (updates: UpdateMetricSignal) => {
+    return;
+  },
 
-  updateMetric: () => {},
-
-  markPageStart: () => {},
-  markPageEnd: () => {},
-
-  getMetric: () => ({
-    accuracy: 100,
-    actualWpm: 0,
-    wpm: 0,
-    adjustedWpm: 0,
-    consistency: 100,
-  }),
-
-  getPayload: () => ({}),
+  progress: [],
 };
 
 const TypingContext = createContext<TypingContextValues>(defaultTypingContext);

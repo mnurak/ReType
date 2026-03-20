@@ -10,7 +10,7 @@ import TypingContext from "../../../context/typing/TypingContext";
 
 const PdfBody = () => {
   const { pdfUrl } = useContext(PdfContext);
-  const { currentPage, updatePageNumber } = useContext(TypingContext);
+  const { currentPage, updatePage } = useContext(TypingContext);
 
   const [numPages, setNumPages] = useState(0);
   const pageRefs = useRef<HTMLDivElement[]>([]);
@@ -82,7 +82,7 @@ const PdfBody = () => {
     }
 
     if (visiblePage !== currentPage) {
-      updatePageNumber(visiblePage);
+      updatePage(visiblePage, false);
     }
   };
 

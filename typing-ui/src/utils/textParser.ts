@@ -14,7 +14,7 @@ export interface Page {
 export interface TypingChar {
   char: string;
   extraChar: string;
-  status: "pending" | "correct" | "incorrect";
+  status: "pending" | "correct" | "incorrect" | "skipped";
 }
 
 export interface TypingLine {
